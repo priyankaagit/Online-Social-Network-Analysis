@@ -6,14 +6,15 @@ repository.
 similarity of two users. E.g., because 344 is larger than 1, I conclude that
 Jill Stein and Gary Johnson are more similar than Hillary Clinton and Donald
 Trump.
-
 How is this approach misleading? How might you fix it?
 
+Ans: Fundamental task in social network analysis is to do community detection. A graph is used to represent the contacts within a social media. One way to find similarity is among users is to find which nodes are densely connected and which are not. But there are others factor which affect similarity detection. Twitter provides three types pf information between users which can be used to find the similarity i.e. retweet, follow, user mention and can be categorized into three parts content similarity - include hashtags, and tweets, link similarity - include follow - following relation, no of retweet, user mentioned or replied to each other, and meta data similarity - include age, gender, location etc.
+So, to conclude that Jill Stein and Gary Johnson are more similar than Hillary Clinton and Donald Trump based on the "follow" count is not correct. To fix this following relation can also be considered. Also hash tag similarity can be also be studied.
 
 
-
-
-
+ref:
+https://www.daniweb.com/programming/software-development/threads/444102/how-to-find-the-similarity-between-users-in-twitter
+https://arxiv.org/pdf/1608.01771.pdf
 
 
 
@@ -23,14 +24,7 @@ do you think this user is followed by both Hilary Clinton and Donald Trump,
 who are rivals? Do some web searches to see if you can find out more
 information.
 
-
-
-
-
-
-
-
-
+Ans: The output of the followed_by_hillary_and_donald function is "White House". Even though they both are arch rivals it shows their common interest to become the US President and want to reside in the official residence and workplace of President of US i.e. "White House". It also shows that they wanted to be updated with any tweets from the then US President and his administration.
 
 
 
@@ -39,10 +33,11 @@ information.
 Johnson follows over 3K accounts, while Donald Trump follows less than
 50). Why do you think this is? How might that affect our analysis?
 
+Ans: In twitter, a person's list of how many people he/she follow gives an indication of their influences and preferences, and in which direction they are heading to. Donald Trump mostly follows his children, other family members, golf courses, fox news host unlike Gary Johnson who follow different variety of people from sportsperson to editors. This shows Donald Trump has his interest in his family and business and Gary on the other hand have variety of interest. However, the no. of people one follow is not the only criteria in analysing the community cluster, it will not affect out analysis, and this information will give idea about their preferences.
 
-
-
-
+ref:
+http://humnet.scripts.mit.edu/wordpress2/wp-content/uploads/2011/09/rinalc@mit.edu_.2.pdf
+http://www.nextanalytics.com/list-of-twitter-followers/
 
 
 
@@ -55,3 +50,5 @@ https://dev.twitter.com/rest/reference/get/friends/ids, how many requests will
 we have to make? Given how Twitter does rate limiting
 (https://dev.twitter.com/rest/public/rate-limiting), approximately how many
 minutes will it take to collect this data?
+
+Ans: To calculate the time taken to collect the data one thing which is important is no. of request, which will depend on number of friends for all 4 candidates. Total number of friend is 5936 (1648 + 3481 + 762 + 45). This API has 15 request/ 15 min window. Therefore, at a time only 15 requests can be processed. To fetch data for all 5936 users, 5925 + 11 (15*395 = 5925) time will be required, since in 15 min 15 request can be fetched. Therefore, approximately 5925 minutes will be required (as it will take small amount of time to process 11 request in 15 request/15 min window).
