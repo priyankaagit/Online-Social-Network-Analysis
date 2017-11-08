@@ -5,6 +5,9 @@
 # Here we'll implement a content-based recommendation algorithm.
 # It will use the list of genres for a movie as the content.
 # The data come from the MovieLens project: http://grouplens.org/datasets/movielens/
+# Note that I have not provided many doctests for this one. I strongly
+# recommend that you write your own for each function to ensure your
+# implementation is correct.
 
 # Please only use these imports.
 from collections import Counter, defaultdict
@@ -52,6 +55,11 @@ def tokenize(movies):
     [['horror', 'romance'], ['sci-fi']]
     """
     ###TODO
+    c = []
+    for i in movies.get('genres'):
+        c.append(tokenize_string(i))
+    movies['tokens'] = np.asarray(c) 
+    return movies
     pass
 
 
@@ -78,6 +86,46 @@ def featurize(movies):
       - The vocab, a dict from term to int. Make sure the vocab is sorted alphabetically as in a2 (e.g., {'aardvark': 0, 'boy': 1, ...})
     """
     ###TODO
+    N = len(movies)
+    vocab_list = []
+    for mov in movies['tokens'].tolist():
+        for m in mov:
+            if m not in vocab_list:
+                vocab_list.append(m)
+    vocab_list.sort()
+    vocab = defaultdict(lambda:0)
+    for i in range(len(vocab_list)):
+        vocab[vocab_list[i]] = i  
+        
+    df_frequency = {}
+    max_freq = 0
+    tf_frequency = {}
+    for index, m in movies.iterrows():
+        freq = defaultdict(lambda: 0)
+        for f in m['tokens']:
+            if f not in df_frequency:
+                df_frequency[f] = 1
+            else:
+                df_frequency[f] = df_frequency[f] + 1
+            if f not in freq:
+                freq[f] = 1
+            else:
+                freq[f] = freq[f] + 1
+            if freq[f] >max_freq:
+                max_freq = freq[f]
+        tf_frequency[m['movieId']] = (freq, max_freq)    
+    matrix = []    
+    for index, m in movies.iterrows():
+        data = []
+        col = []
+        row = []
+        for f in m['tokens']:       
+            data.append(tf_frequency[m['movieId']][0][f]/ (tf_frequency[m['movieId']][1] * math.log10(N/df_frequency[f])))
+            col.append(vocab[f])
+            row.append(0)
+        matrix.append(csr_matrix((data,(row,col)), shape=(1,len(vocab))))
+    movies['features'] = matrix
+    return movies,vocab
     pass
 
 
@@ -103,6 +151,7 @@ def cosine_sim(a, b):
       where ||a|| indicates the Euclidean norm (aka L2 norm) of vector a.
     """
     ###TODO
+    return np.dot(a,b.T)/((np.linalg.norm(a))* (np.linalg.norm(b)))  
     pass
 
 
@@ -129,6 +178,31 @@ def make_predictions(movies, ratings_train, ratings_test):
       A numpy array containing one predicted rating for each element of ratings_test.
     """
     ###TODO
+    train_rate = defaultdict(list)
+    for test_Index, test_m in ratings_train.iterrows():
+        train_rate[test_m.userId].append((test_m.movieId,test_m.rating))    
+
+    movies_feature = defaultdict()
+    for Index, m in movies.iterrows():
+        movies_feature[m.movieId] = m.features
+
+    predcited_rating = []
+    for test_Index, test_m in ratings_test.iterrows():
+        weighted_prod = []
+        weighted_sum = []
+        rating = []
+        test = train_rate[test_m.userId] 
+        for t in test:
+            c = cosine_sim(movies_feature[t[0]].toarray(),movies_feature[test_m.movieId].toarray())
+            weighted_prod.append(c*t[1])
+            weighted_sum.append(c)
+            rating.append(t[1])
+        if np.sum(weighted_sum)>0 and np.sum(weighted_prod)>0:
+            weighted_avg = np.sum(weighted_prod)/np.sum(weighted_sum)
+            predcited_rating.append(weighted_avg)
+        else:
+            predcited_rating.append(np.mean(rating))
+    return np.array(predcited_rating)
     pass
 
 
