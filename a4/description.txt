@@ -1,0 +1,9 @@
+In this I have implemented the code on sentiment analysis, looking what sentiment does people have about the recent Miss World winner Manushi Chillar.
+
+In the collect script,beginning with Manushi Chillar, extracted all the people she follow, and for each new user extracted all the people they follow. I also extracted the sample tweets for test and labeled them. The tweets were about what people have mentioned about Manushi Chillar in their tweets. The edges detail data is written to a txt file.
+
+In the cluster script, using the relation between the collected user and their friends, created a graph and removed the nodes with 1 degree. Using the partition girvan newman algorithm, clustered the users in differant communities. Cluster detail is written to txt file.
+
+In classify script, I used the already labeled training data for fitting the model. Model used is Logistic Regression. Using the test tweets which I labelled manually for test, predicted labels accuracy were checked. Classify detail is written to a txt file.
+
+Finally, using the output from all three script, the final required result is written to summary.txt file.
