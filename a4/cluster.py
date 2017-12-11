@@ -55,8 +55,7 @@ def partition_girvan_newman(graph):
     pass
 
 def read_graph():
-    """ Read 'edges.txt.gz' into a networkx **undirected** graph.
-    Done for you.
+    """ Read 'follower.txt' into a networkx **undirected** graph.
     Returns:
       A networkx undirected graph.
     """

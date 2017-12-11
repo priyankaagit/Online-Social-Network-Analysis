@@ -579,7 +579,7 @@ def evaluate(predicted_edges, graph):
     Return the fraction of the predicted edges that exist in the graph.
 
     Args:
-      predicted_edges...a list of edges (tuples) that are predicted to
+     predicted_edges...a list of edges (tuples) that are predicted to
                         exist in this graph
       graph.............a networkx Graph
 
